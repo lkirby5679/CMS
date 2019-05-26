@@ -1,0 +1,48 @@
+# Some Apache setups will look at double extensions and execute any that look interesting to it - bad for security. Composr filters those though.
+
+SetHandler default-handler
+AddType text/plain php
+
+<IfModule mod_php5.c>
+php_value engine off
+</IfModule>
+
+<IfModule mod_php7.c>
+php_value engine off
+</IfModule>
+
+
+<IfModule mod_expires.c>
+<FilesMatch "\.(css|js)$">
+ExpiresActive On
+ExpiresByType application/javascript "now plus 1 months"
+ExpiresByType text/css "now plus 1 months"
+</FilesMatch>
+</IfModule>
+
+
+# Serve pre-compressed CSS/JS files if they exist and the client accepts gzip
+#  This may not work properly on Windows due to Apache bugs. The RewriteRule may redirect to contain the full file path, and also the most recent FilesMatch expression
+#<IfModule mod_rewrite.c>
+#<IfModule mod_env.c>
+#<IfModule mod_headers.c>
+#<FilesMatch "\.js(\.gz)?($|\?)">
+#ForceType application/javascript
+#Header set Content-Encoding: gzip
+#Header append Vary: Accept-Encoding
+#SetEnv no-gzip
+#</FilesMatch>
+#<FilesMatch "\.css(\.gz)?($|\?)">
+#ForceType text/css
+#Header set Content-Encoding: gzip
+#Header append Vary: Accept-Encoding
+#SetEnv no-gzip
+#</FilesMatch>
+#<FilesMatch "\.(js|css)?($|\?)">
+#RewriteCond %{HTTP:Accept-encoding} gzip
+#RewriteCond %{REQUEST_FILENAME}\.gz -s
+#RewriteRule (.*) $1.gz [QSA,L]
+#</FilesMatch>
+#</IfModule>
+#</IfModule>
+#</IfModule>
